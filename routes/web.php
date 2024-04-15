@@ -4,10 +4,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+<<<<<<< HEAD
 use App\Http\Controllers\CommentController;
 
 // use Auth;
 
+=======
+use Illuminate\Support\Facades\Auth;
+>>>>>>> 8045a3cf91e6c12d6de6ea61f9efe27098071d3a
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -37,8 +41,12 @@ Route::group(['middleware' => 'auth:manager'], function () {
     Route::view('/manager', 'manager');
 });
 Route::group(['middleware' => 'auth:admin'], function () {
+<<<<<<< HEAD
 
     Route::view('/admin', 'admin');
+=======
+ Route::view('/admin', 'admin');
+>>>>>>> 8045a3cf91e6c12d6de6ea61f9efe27098071d3a
 });
 Route::get('logout', [LoginController::class, 'logout']);
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

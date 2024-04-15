@@ -23,4 +23,9 @@ class Project extends Model
         'location',
         'cost'
     ];
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

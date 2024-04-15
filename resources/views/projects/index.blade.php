@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 @section('content')
     <div class="row">
         <div class="col-lg-12 margin-tb">
@@ -38,7 +40,7 @@
                 <td>{{ $project->cost }}</td>
                 <td>{{ date_format($project->created_at, 'jS M Y') }}</td>
                 <td>
-                    <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
+                    <form action="{{ route('projects.destroy', $project->id) }}" method="POST" class="delete-form">
 
                         <a href="{{ route('projects.show', $project->id) }}" title="show">
                             <i class="fas fa-eye text-success  fa-lg"></i>
@@ -46,7 +48,11 @@
 
                         <a href="{{ route('projects.edit', $project->id) }}">
                             <i class="fas fa-edit  fa-lg"></i>
+                        </a>
 
+                        <!-- Add a comment button -->
+                        <a href="{{ route('comments.show', ['project' => $project->id]) }}" title="Create Comment">
+                            <i class="fas fa-comment-alt fa-lg"></i>
                         </a>
 
                         @csrf
@@ -65,3 +71,34 @@
     {!! $projects->links() !!}
 
 @endsection
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Select all forms with the class 'delete-form'
+        var deleteForms = document.querySelectorAll('.delete-form');
+
+        // Add an event listener to each form
+        deleteForms.forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                // Prevent form submission
+                event.preventDefault();
+
+                // Show SweetAlert confirmation popup
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You won\'t be able to recover this project!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // If the user confirms, submit the form
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>

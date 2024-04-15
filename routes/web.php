@@ -4,10 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\CommentController;
-
-// use Auth;
-
+use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -37,8 +34,7 @@ Route::group(['middleware' => 'auth:manager'], function () {
     Route::view('/manager', 'manager');
 });
 Route::group(['middleware' => 'auth:admin'], function () {
-
-    Route::view('/admin', 'admin');
+ Route::view('/admin', 'admin');
 });
 Route::get('logout', [LoginController::class, 'logout']);
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

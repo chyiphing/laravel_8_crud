@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ProjectController extends Controller
 {
@@ -27,7 +28,12 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        return view('projects.create');
+        if(Gate::allows('isAdmin')||Gate::allows('isManager')){
+            return view('projects.create');
+        }
+        else{
+            return view('auth.login');
+        }
     }
 
     /**
@@ -38,17 +44,22 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'introduction' => 'required',
-            'location' => 'required',
-            'cost' => 'required'
-        ]);
+        if(Gate::allows('isAdmin')||Gate::allows('isManager')){
+            $request->validate([
+                'name' => 'required',
+                'introduction' => 'required',
+                'location' => 'required',
+                'cost' => 'required'
+            ]);
 
-        Project::create($request->all());
+            Project::create($request->all());
 
-        return redirect()->route('projects.index')
-            ->with('success', 'Project created successfully.');
+            return redirect()->route('projects.index')
+                ->with('success', 'Project created successfully.');
+        }
+        else{
+            abort(403, 'Unauthorized action.');
+        }
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Models\Manager;
 use App\Models\Admin;
+use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -95,7 +96,14 @@ class RegisterController extends Controller
         Admin::create([
             'name' => $request->name,
             'email' => $request->email,
+            'password' => Hash::make($request->password)
+        ]);
+
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => "admin"
         ]);
         return redirect()->intended('login/admin');
     }
@@ -112,7 +120,7 @@ class RegisterController extends Controller
         Manager::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => Hash::make($request->password)
         ]);
         return redirect()->intended('login/manager');
     }

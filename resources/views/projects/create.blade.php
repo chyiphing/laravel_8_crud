@@ -51,9 +51,15 @@
                     <input type="number" name="cost" class="form-control" placeholder="Cost">
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </div>
+            @can('isAdmin')
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-group">
+                        <strong>Manger Id:</strong>
+                        <input type="number" name="cost" class="form-control" placeholder="Manager Id">
+                    </div>
+                </div>
+            @endcan
+
         </div>
 
     </form>

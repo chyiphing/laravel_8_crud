@@ -28,12 +28,13 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        if(Gate::allows('isAdmin')||Gate::allows('isManager')){
-            return view('projects.create');
-        }
-        else{
-            return view('auth.login');
-        }
+        $this->authorize('create');
+        // if(Gate::allows('isAdmin')||Gate::allows('isManager')){
+        return view('projects.create');
+        // }
+        // else{
+            // return view('auth.login');
+        // }
     }
 
     /**
@@ -44,7 +45,9 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        if(Gate::allows('isAdmin')||Gate::allows('isManager')){
+
+        $this->authorize('create');
+        // if(Gate::allows('isAdmin')||Gate::allows('isManager')){
             $request->validate([
                 'name' => 'required',
                 'introduction' => 'required',
@@ -56,10 +59,10 @@ class ProjectController extends Controller
 
             return redirect()->route('projects.index')
                 ->with('success', 'Project created successfully.');
-        }
-        else{
-            abort(403, 'Unauthorized action.');
-        }
+        // }
+        // else{
+        //     abort(403, 'Unauthorized action.');
+        // }
     }
 
     /**
@@ -70,6 +73,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
+        $this->authorize('view');
         return view('projects.show', compact('project'));
     }
 
@@ -81,6 +85,7 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
+        $this->authorize('update',$project);
         return view('projects.edit', compact('project'));
     }
     /**
@@ -92,6 +97,7 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
+        $this->authorize('update',$project);
         $request->validate([
             'name' => 'required',
             'introduction' => 'required',
@@ -111,6 +117,7 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
+        $this->authorize('delete',$project);
         $project->delete();
 
         return redirect()->route('projects.index')

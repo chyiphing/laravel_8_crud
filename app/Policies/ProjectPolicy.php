@@ -32,7 +32,7 @@ class ProjectPolicy
     public function view(User $user, Project $project)
     {
         //
-        return $user->role==="manager" && $user->id === $project->user_id;
+        return true;
     }
 
     /**
@@ -57,7 +57,7 @@ class ProjectPolicy
     public function update(User $user, Project $project)
     {
         //
-        return $user->id === $project ->user_id || $user->role==="admin";
+        return $user->id === $project ->user_id || $user->role === "admin";
     }
 
     /**

@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\Gate;
 use App\Models\Admin;
 use App\Models\Manager;
 use App\Models\Project;
+use App\Models\Comment;
 use App\Policies\ProjectPolicy;
+use App\Policies\CommentPolicy;
 use Illuminate\Support\Facades\Auth;
 
 class AuthServiceProvider extends ServiceProvider
@@ -20,6 +22,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
         Project::class=> ProjectPolicy::class,
+        Comment::class=> CommentPolicy::class,
     ];
 
     /**

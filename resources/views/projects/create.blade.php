@@ -54,10 +54,16 @@
             @can('isAdmin')
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
-                        <strong>Manger Id:</strong>
-                        <input type="number" name="cost" class="form-control" placeholder="Manager Id">
+                        <strong>Manager:</strong>
+                        <select name="user_id" class="form-control">
+                            @foreach($managers as $manager)
+                                <option value="{{ $manager->id }}">{{ $manager->id }} - {{ $manager->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
+            @elsecan('isManager')
+                <input type="hidden" name="user_id" value="{{ $user_id }}">
             @endcan
             <div class="col-xs-12 col-sm-12 col-md-12 text-center">
                 <button type="submit" class="btn btn-primary">Add</button>

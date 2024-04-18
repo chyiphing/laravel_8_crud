@@ -164,20 +164,28 @@ small {
                             {{ $comment->content }} - 
                             <small>
                                 {{ $comment->created_at->format('jS M Y H:i') }}
-                                by {{ $comment->user->name }}
+                                by {{ $comment->user->name }} 
+                                @if($comment->user->role == "admin")
+                                    (Admin)
+                                @endif
                             </small>
                         </div>
                         <div class="actions">
                             <!-- Edit and delete icons -->
-                            <a href="{{ route('comments.edit', ['project' => $project->id, 'comment' => $comment->id]) }}" title="Edit Comment" class="btn btn-sm btn-info">
-                                <i class="fas fa-edit"></i>
-                            </a>
+                            @can('update', $comment)
+                                <a href="{{ route('comments.edit', ['project' => $project->id, 'comment' => $comment->id]) }}" title="Edit Comment" class="btn btn-sm btn-info">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            @endcan
+
+                            @can('delete', $comment)
                             <form action="{{ route('comments.destroy', ['project' => $project->id, 'comment' => $comment->id]) }}" method="delete" class="delete-form" style="display: inline-block;">
                                 @csrf
                                 <button type="submit" title="Delete Comment" class="btn btn-sm btn-danger">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </form>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -188,17 +196,22 @@ small {
     @endif
 
     <!-- Comment form -->
-    <form action="{{ route('comments.store', ['project' => $project->id]) }}" method="POST">
-        @csrf
-        <div class="input-group">
-            <input type="hidden" name="user_id" class="form-control" value=1>
-            <input type="hidden" name="project_id" class="form-control" value="{{ $project->id }}">
-            <input type="text" name="content" class="form-control" placeholder="Add a comment..." required>
-            <button class="btn btn-primary" type="submit">
-            <i class="fas fa-plus"></i> Add
-            </button>
+    @auth
+        <form action="{{ route('comments.store', ['project' => $project->id]) }}" method="POST">
+            @csrf
+            <div class="input-group">
+                <input type="hidden" name="project_id" class="form-control" value="{{ $project->id }}">
+                <input type="text" name="content" class="form-control" placeholder="Add a comment..." required>
+                <button class="btn btn-primary" type="submit">
+                <i class="fas fa-plus"></i> Add
+                </button>
+            </div>
+        </form>
+    @else
+        <div style="background-color:#ebeced; padding:20px">
+            Login to add your comments on this project.
         </div>
-    </form>
+    @endauth
     
 @endsection
 

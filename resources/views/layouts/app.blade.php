@@ -25,7 +25,7 @@
             text-align: center;
         }
         body {
-            background-color:  #EDF7EF
+            background-color:  #ffffff
         }
 
     </style>
@@ -39,14 +39,6 @@
 
     <div class="container">
         @yield('content')
-    </div>
-    <div class="text-center footer">
-
-        <h4>The writer needs a job</h4>
-        <h4>+234 806 605 6233</h4>
-        <h4>kingsconsult001@gmail.com</h4>
-        <h4>Github: www.github.com/kingsconsult</h4>
-
     </div>
 </body>
 

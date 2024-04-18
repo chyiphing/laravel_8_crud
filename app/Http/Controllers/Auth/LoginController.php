@@ -25,7 +25,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = 'projects';
     /**
      * Create a new controller instance.
      *
@@ -66,5 +66,11 @@ class LoginController extends Controller
             return redirect()->intended('/manager'); //not implemented
         }
         return back()->withInput($request->only('email', 'remember'));
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        return redirect()->route('projects.index');
     }
 }

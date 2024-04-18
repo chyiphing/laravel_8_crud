@@ -21,7 +21,8 @@ class Project extends Model
         'introduction',
         'created_at',
         'location',
-        'cost'
+        'cost',
+        'user_id'
     ];
 
     public function comments()

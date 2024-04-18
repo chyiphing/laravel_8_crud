@@ -3,22 +3,45 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 @section('content')
-    <div class="row">
-        <div class="col-lg-12 margin-tb">
+    <div class="row" style="margin-bottom:20px">
+        <div class="col-lg-12 margin-tb ">
             <div class="pull-left">
                 <h2>Project List </h2>
+                @auth
+                    <span>
+                        Current User: {{ auth()->user()->name }} 
+                    @endauth
+
+                    @can('isAdmin')
+                        (Admin Panel)
+                    @elsecan('isManager')
+                        (Manager Panel)
+                    @endcan
+                </span>
+
             </div>
+
             <div class="pull-right">
-                <a class="btn btn-success" href="{{ route('projects.create') }}" title="Create a project"> <i class="fas fa-plus-circle"></i>
+                @if (Auth::check())
+                    <a class="btn btn-success" href="{{ route('projects.create') }}" title="Create a project"> <i
+                            class="fas fa-plus-circle"></i> Create Project
                     </a>
+                    <a class="btn btn-warning" href="{{ route('logout') }}" title="Logout"> <i class="fas fa-sign-out-alt"
+                            style="color:#ffffff"></i> Logout
+                    </a>
+                @else
+                    <a class="btn btn-primary" href="{{ route('login') }}" title="Login"> <i class="fas fa-sign-in-alt"
+                            style="color:#ffffff"></i> Login
+                    </a>
+                    <a class="btn btn-primary" href="{{ route('register') }}" title="Sign Up"> <i class="fas fa-user-plus"
+                            style="color:#ffffff"></i> Sign Up
+                    </a>
+                @endif
             </div>
         </div>
     </div>
-    @can('isAdmin')
-    <div>Admin</div>
-    @elsecan('isManager')
-    <div>Manager</div>
-    @endcan
+
+
 
     @if ($message = Session::get('success'))
         <div class="alert alert-success">
@@ -34,7 +57,7 @@
             <th>Location</th>
             <th>Cost</th>
             <th>Date Created</th>
-            <th>Manager ID</th>
+            <th>Manager</th>
             <th width="280px">Action</th>
         </tr>
 
@@ -46,37 +69,41 @@
                 <td>{{ $project->location }}</td>
                 <td>{{ $project->cost }}</td>
                 <td>{{ date_format($project->created_at, 'jS M Y') }}</td>
-                <td>{{ $project->user_id }}</td>
+                <td>
+                    {{ $project->user->name }}
+                </td>
                 <td>
                     <form action="{{ route('projects.destroy', $project->id) }}" method="POST" class="delete-form">
+                        <div style="display:flex;">
+                            <div style="padding:0px 10px">
+                                <a href="{{ route('projects.show', $project->id) }}" title="show">
+                                    <i class="fas fa-eye text-success fa-lg"></i>
+                                </a>
+                            </div>
 
-                        <a href="{{ route('projects.show', $project->id) }}" title="show">
-                            <i class="fas fa-eye text-success  fa-lg"></i>
-                        </a>
+                            <!-- Add a comment button -->
+                            <div style="padding:0px 10px">
+                                <a href="{{ route('comments.show', ['project' => $project->id]) }}" title="Create Comment">
+                                    <i class="fas fa-comment-alt fa-lg"></i>
+                                </a>
+                            </div>
 
-                        <!-- Add a comment button -->
-                        <a href="{{ route('comments.show', ['project' => $project->id]) }}" title="Create Comment">
-                            <i class="fas fa-comment-alt fa-lg"></i>
-                        </a>
+                            @can('update', $project)
+                                <div style="padding:0px 10px">
+                                    <a href="{{ route('projects.edit', $project->id) }}">
+                                        <i class="fas fa-edit  fa-lg"></i>
+                                    </a>
+                                </div>
+                            @endcan
 
-                        @can('update',$project)
-                        <a href="{{ route('projects.edit', $project->id) }}">
-                            <i class="fas fa-edit  fa-lg"></i>
-                        </a>
-                        @endcan
-
-
-
-                        @can('delete',$project)
-                        @csrf
-                        @method('DELETE')
-
-
-                        <button type="submit" title="delete" style="border: none; background-color:transparent;">
-                            <i class="fas fa-trash fa-lg text-danger"></i>
-
-                        </button>
-                        @endcan
+                            @can('delete', $project)
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" title="delete" style="border: none; background-color:transparent;">
+                                    <i class="fas fa-trash fa-lg text-danger"></i>
+                                </button>
+                            @endcan
+                        </div>
                     </form>
                 </td>
             </tr>
@@ -84,7 +111,6 @@
     </table>
 
     {!! $projects->links() !!}
-
 @endsection
 
 <script>

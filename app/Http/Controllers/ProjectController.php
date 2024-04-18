@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
 {
@@ -26,15 +28,19 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        $this->authorize('create');
-        // if(Gate::allows('isAdmin')||Gate::allows('isManager')){
-        return view('projects.create');
-        // }
-        // else{
-            // return view('auth.login');
-        // }
+        if(Gate::allows('isAdmin')){
+            $managers = User::where('role', 'manager')->get();
+            return view('projects.create', ['managers' => $managers]);
+        }
+        else if (Gate::allows('isManager')){
+            $user_id = Auth::id();
+            return view('projects.create', ['user_id' => $user_id]);
+        }
+        else{
+            return view('auth.login');
+        }
     }
 
     /**
@@ -46,23 +52,23 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
 
-        $this->authorize('create');
-        // if(Gate::allows('isAdmin')||Gate::allows('isManager')){
-            $request->validate([
-                'name' => 'required',
-                'introduction' => 'required',
-                'location' => 'required',
-                'cost' => 'required'
-            ]);
+        $this->authorize('create', Project::class);
 
-            Project::create($request->all());
+        $request->validate([
+            'name' => 'required',
+            'introduction' => 'required',
+            'location' => 'required',
+            'cost' => 'required',
+            'user_id' => 'required'
+        ]);
 
-            return redirect()->route('projects.index')
-                ->with('success', 'Project created successfully.');
-        // }
-        // else{
-        //     abort(403, 'Unauthorized action.');
-        // }
+
+
+        Project::create($request->all());
+
+        return redirect()->route('projects.index')
+            ->with('success', 'Project created successfully.');
+
     }
 
     /**
@@ -73,7 +79,6 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        $this->authorize('view');
         return view('projects.show', compact('project'));
     }
 
